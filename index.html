@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snake Game</title>
+  <style>
+    /* CSS styles for the game canvas */
+    canvas {
+      border: 1px solid black;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="640" height="320"></canvas>
+  <script>
+    const ws = new WebSocket('ws://192.168.4.1:81'); // Replace with your NodeMCU's IP address
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    ws.onmessage = (event) => {
+      const gameState = JSON.parse(event.data);
+      drawGame(gameState);
+    };
+
+    function drawGame(gameState) {
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the snake
+      for (let i = 0; i < gameState.snake.length; i++) {
+        const segment = gameState.snake[i];
+        ctx.fillRect(segment.x * 20, segment.y * 20, 20, 20);
+      }
+
+      // Draw the food
+      ctx.fillStyle = 'red';
+      ctx.fillRect(gameState.food.x * 20, gameState.food.y * 20, 20, 20);
+    }
+  </script>
+</body>
+</html>
